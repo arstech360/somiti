@@ -1,0 +1,190 @@
+
+
+form{
+    padding: 0 6.4rem;
+    background-color: #FFFFFF;
+    max-width: 75rem;
+    width: 100%;
+    min-height: 100vh;
+    margin-top: 3.2rem;
+    border-radius:  2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3.2rem;
+    position: relative;
+    margin-bottom: 8rem;
+    margin:0 auto;
+    
+}
+form div:first-child > fieldset legend{
+    width: 100%;
+    position: absolute;
+    left: 0;
+    height: 13.3rem;
+
+    background-image: linear-gradient(195deg, #EC407A 0%, #D81B60 100%);
+    border-radius:  2rem 2rem 0 0 ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Staatliches',sans-serif;
+    text-transform: uppercase;
+    font-size: 2.4rem;
+    line-height: 3.4rem;
+    color: #FFFFFF;
+    border: 0;
+    
+}form div:first-child  > .input-wrapper:nth-child(2){
+    display: flex;
+    margin-top: 13rem;
+    flex-direction: row;
+    gap: 2.2rem;
+    
+}
+.fieldset-wrapper fieldset legend{
+    font-family: 'Staatliches',sans-serif;
+    font-style: 2.4rem;
+    line-height: 3.4rem;
+    text-align: center;
+    width: 100%;
+    border-bottom: 1px solid #E6E6F0;
+    text-transform: uppercase;
+    background:#D81B60;
+    color:#fff;
+    border-radius:5px;
+}
+.gander{
+margin-bottom:-26px!important;
+}
+.input-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    font-size: 1.4rem;
+}
+.input-wrapper label{
+    color: #4E4958;
+}
+.input-wrapper input,
+.input-wrapper select,
+.input-wrapper textarea{
+    width: 100%;
+    height: 5.6rem;
+    background: #FAFAFC;
+    border: 1px solid #E6E6F0;
+    border-radius: 8px;
+    color: #4E4958;
+    line-height: 2.4rem;
+}
+.input-wrapper input:invalid,
+.input-wrapper select:invalid{
+    border: 1px solid #D81B60;
+}
+.input-wrapper select{
+    appearance: none;
+    -webkit-appearance: none;
+    width: 50%;
+}
+.input-wrapper textarea{
+    height: 16.7rem;
+    padding: 1rem;
+    padding: 1rem;
+    color: #293241;
+    font-size: 1.6rem;
+}
+.check-wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+.check-wrapper input{
+    width: 2.4rem;
+    height: 2.4rem;
+}
+.input-wrapper label span{
+    font-size: 1.2rem;
+    color: #C1BCCC;
+    margin-left: 9px;
+}
+.input-wrapper label span:hover{
+    color: #292d33;
+}
+.fieldset-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 3.2rem;
+}
+.event-day{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.event-day> div:nth-child(1){
+    width: 200%;
+}
+.fieldset-button{
+    width: 100%;
+    height: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3.2rem;
+}
+.button{
+    max-width: 62.2rem;
+    height: 5.6rem;
+    width: 100%;
+    color: #FFFFFF;
+    #background: #F67669;
+    background-image: linear-gradient(195deg, #EC407A 0%, #D81B60 100%);
+    border-radius: 8px;
+    font-family: 'Staatliches',sans-serif;
+    font-size: 2rem;
+    line-height: 2.6rem;
+    margin-bottom: 6.4rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    outline:none;
+    border:none
+}
+button:hover{
+    background: #D81B60;
+    font-size: 2rem;
+    box-shadow: 2px 1px 10px 1px #C1BCCC;
+    border:none
+}
+@media(max-width:600px){
+    form div:first-child  > .input-wrapper:nth-child(2){
+        flex-direction: column;
+    }
+    .event-day> div:nth-child(1){
+        width: 100%;
+    }
+    .event-day{
+        flex-direction: column;
+    }
+
+}
+@media  (max-width:500px ){
+    form div:first-child  > .input-wrapper:nth-child(2){
+        flex-direction: column;
+        align-items:flex-start;
+    }
+    .event-day> div:nth-child(1){
+        width: 100%;
+    }
+    .event-day{
+        flex-direction: column;
+    }
+    form{
+        padding:0 5px;
+    }
+    form input{
+            height: 44px !important;
+    }
+    form fieldset{
+    font-size:28px !important;
+    }
+}
