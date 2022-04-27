@@ -29,11 +29,6 @@ storage=firebase.storage()
 def signIn(request):
   return render(request, "sign-in.html")
 
-
-def dashboard(request):
-  return render(request, "dashboard.html")
-
-
 def postsignIn(request):
   email = request.POST.get('email')
   pasw = request.POST.get('pass')
@@ -111,9 +106,15 @@ def createacc(request):
   }
   database.child("somiti").child("createacc").push(data)
   totalloan=database.child("somiti").child("dashboarddata").get().val()
-  totalloan=float(totalloan['totalloan'])+float(amount)
-  database.child("somiti").child("dashboarddata").update({"totalloan":totalloan})
-  print(totalloan)
+  capital = database.child("somiti").child("dashboarddata").get().val()
+  try:
+    totalloan=float(totalloan['totalloan'])+float(amount)
+    database.child("somiti").child("dashboarddata").update({"totalloan":totalloan})
+    capital = float(capital['capital']) - float(totalloan)
+    database.child("somiti").child("dashboarddata").update({"capital": capital})
+    print(totalloan)
+  except:
+    None
   return render(request,"createaccount.html")
 
 def userdata(request):
@@ -232,7 +233,23 @@ def installment(request):
   with open('id.json', 'w') as json_file:
     json.dump(data, json_file)
   print(data)
+
+
+  totalsavings=database.child("somiti").child("dashboarddata").get().val()
+  totalcollection = database.child("somiti").child("dashboarddata").get().val()
+  capital = database.child("somiti").child("dashboarddata").get().val()
+  try:
+    totalsavings = float(totalsavings['totalsavings']) + float(savings)
+    database.child("somiti").child("dashboarddata").update({"totalsavings": totalsavings})
+    totalcollection = float(totalcollection['totalcollection']) + float(collection)
+    database.child("somiti").child("dashboarddata").update({"totalcollection": totalcollection})
+    capital = float(capital['capital']) + float(totalsavings)+float(totalcollection)
+    database.child("somiti").child("dashboarddata").update({"capital": capital})
+    print(totalcollection)
+  except:
+    None
   return render(request, "installment-form.html")
+
 def addemployee(request):
   return render(request,"add-employee.html")
 def addemployeepost(request):
@@ -313,10 +330,72 @@ def expensepost(request):
     "designation_id2": designation_id2,
   }
   database.child("somiti").child("expense").push(data)
+  expense = database.child("somiti").child("dashboarddata").get().val()
+  try:
+    capital = float(capital['capital']) + float(totalsavings)+float(totalcollection)
+    database.child("somiti").child("dashboarddata").update({"capital": capital})
+    print(totalcollection)
+  except:
+    None
   return redirect('expensedetails')
 
 def expensedetails(request):
   context = database.child("somiti").get().val()
   return render(request,"expenseDetails.html",context)
+
+def depositor(request):
+  context = database.child("somiti").get().val()
+  print(context)
+  return render(request,"depositor.html",context)
+def addDepositor(request):
+  return render(request,"add-depositor.html",)
+def addDepositorpost(request):
+  depositor_name = request.POST.get('depositor_name', '')
+  deposi_mobile_number = request.POST.get('deposi_mobile_number')
+  deposi_email_address = request.POST.get('deposi_email_address')
+  deposi_employee_images = request.POST.get('deposi_employee_images')
+  depositor_address = request.POST.get('depositor_address')
+  nid_number = request.POST.get('nid_number')
+  deposit_amount = request.POST.get('deposit_amount')
+  deposit_date = request.POST.get('deposit_date')
+  status = request.POST.get('status')
+  if(int(status)==1):
+    status="Active"
+  else:
+    status="Inactive"
+  data = {
+    "depositor_name": depositor_name,
+    "deposi_mobile_number": deposi_mobile_number,
+    "deposi_email_address": deposi_email_address,
+    "deposi_employee_images": deposi_employee_images,
+    "depositor_address": depositor_address,
+    "nid_number": nid_number,
+    "deposit_amount": deposit_amount,
+    "deposit_date": deposit_date,
+    "status": status,
+
+  }
+
+  database.child("somiti").child("depostior").push(data)
+  deposit = database.child("somiti").child("dashboarddata").get().val()
+  capital = database.child("somiti").child("dashboarddata").get().val()
+  try:
+    deposit = float(deposit['deposit']) + float(deposit_amount)
+    database.child("somiti").child("dashboarddata").update({"deposit": deposit})
+    capital = float(capital['capital']) + float(deposit_amount)
+    database.child("somiti").child("dashboarddata").update({"capital": capital})
+    print(deposit)
+  except:
+    None
+  print(data)
+  return redirect('depositor')
+
+
 def dashboard(request):
-  return render(request,"dashboard.html",)
+  capital = database.child("somiti").get().val()
+
+  print(capital)
+  return render(request,"dashboard.html",capital)
+
+def adminprofile(request):
+  return render(request,"profile.html")

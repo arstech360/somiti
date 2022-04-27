@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from  .views import  signIn,postsignIn,createacc,userdata,deleteuser,profile,viewacc,installment,employee,addemployee,addemployeepost,\
-    expense,expensedetails,expensepost,dashboard
+    expense,expensedetails,expensepost,dashboard,depositor,addDepositor,addDepositorpost,adminprofile
 from django.urls import re_path as url
 
 urlpatterns = [
@@ -35,5 +35,9 @@ path('addemployeepost',addemployeepost,name="addemployeepost"),
 path('expense',expense,name="expense"),
 path('expensepost',expensepost,name="expensepost"),
 path('expensedetails',expensedetails,name="expensedetails"),
+path('depositor',depositor,name="depositor"),
+path('addDepositor',addDepositor,name="addDepositor"),
+path('addDepositorpost',addDepositorpost,name="addDepositorpost"),
 path('dashboard',dashboard,name="dashboard"),
+path('adminprofile',adminprofile,name="adminprofile"),
 ]
