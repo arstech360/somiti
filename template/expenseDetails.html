@@ -47,6 +47,7 @@
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <!-- CSS Files -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <link id="pagestyle" href="{% static 'css/material-dashboard.css' %}" rel="stylesheet" />
     <link href="{% static 'css/createacc.css' %}" rel="stylesheet" />
 </head>
@@ -322,7 +323,10 @@
               <td>{{value.father_name}}</td>
               <td>{{value.house_rent}}</td>
               <td>{{value.mobile_number}}</td>
-              <td></td>
+               <td style="text-align:center;">
+                        <a href="{% url 'deleteexpense' value.father_name %}" style="color:#E73774;" class="fa-solid fa-trash"></a>
+               </td>
+
             </tr>
            {% endfor %}
           </tbody>

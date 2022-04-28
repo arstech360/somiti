@@ -222,8 +222,21 @@ def installment(request):
   with open('id.json', 'r') as f:
     data = json.load(f)
     data['uid']
-
-  database.child("somiti").child("installmentData").child(data['uid']).child("allloansaving").child('loansavings').push(loansavingdata)
+  if data['uid']==0:
+    None
+  else:
+    database.child("somiti").child("installmentData").child(data['uid']).child("allloansaving").child('loansavings').push(loansavingdata)
+    named_tuple = time.localtime()  # get struct_time
+    timedate = time.strftime("%m%d%Y", named_tuple)
+    timedate="date"+str(timedate)
+    database.child("somiti").child("installmentData").child(timedate).child("allloansaving").child('loansavings').push(
+      loansavingdata)
+    savingtoday=database.child("somiti").child("dailyoverview").child(timedate).get().val()
+    if savingtoday==None:
+      database.child("somiti").child("dailyoverview").child(timedate).update({"savings":savings,"collection":collection})
+    else:
+      savingtoday=float(savingtoday['savings'])+float(savings)
+      database.child("somiti").child("dailyoverview").child(timedate).update({"savings":savingtoday,"collection":collection})
 
   import json
 
@@ -235,16 +248,18 @@ def installment(request):
   print(data)
 
 
-  totalsavings=database.child("somiti").child("dashboarddata").get().val()
-  totalcollection = database.child("somiti").child("dashboarddata").get().val()
-  capital = database.child("somiti").child("dashboarddata").get().val()
+  y=database.child("somiti").child("dashboarddata").get().val()
+  #totalcollection = database.child("somiti").child("dashboarddata").get().val()
+  #capital = database.child("somiti").child("dashboarddata").get().val()
   try:
-    totalsavings = float(totalsavings['totalsavings']) + float(savings)
-    database.child("somiti").child("dashboarddata").update({"totalsavings": totalsavings})
-    totalcollection = float(totalcollection['totalcollection']) + float(collection)
-    database.child("somiti").child("dashboarddata").update({"totalcollection": totalcollection})
-    capital = float(capital['capital']) + float(totalsavings)+float(totalcollection)
-    database.child("somiti").child("dashboarddata").update({"capital": capital})
+    totalsavings = float(y['totalsavings']) + float(savings)
+    capital = float(y['capital']) + float(totalsavings) + float(y['totalcollection'])
+    totalcollection = float(y['totalcollection']) + float(collection)
+    database.child("somiti").child("dashboarddata").update({"totalsavings": totalsavings,"totalcollection": totalcollection,"capital": capital})
+
+    # database.child("somiti").child("dashboarddata").update({"totalcollection": totalcollection})
+
+    # database.child("somiti").child("dashboarddata").update({"capital": capital})
     print(totalcollection)
   except:
     None
@@ -329,14 +344,20 @@ def expensepost(request):
     "house_rent": house_rent,
     "designation_id2": designation_id2,
   }
+  import time
   database.child("somiti").child("expense").push(data)
   expense = database.child("somiti").child("dashboarddata").get().val()
-  try:
-    capital = float(capital['capital']) + float(totalsavings)+float(totalcollection)
-    database.child("somiti").child("dashboarddata").update({"capital": capital})
-    print(totalcollection)
-  except:
-    None
+  named_tuple = time.localtime()  # get struct_time
+  timedate = time.strftime("%m%d%Y", named_tuple)
+  timedate = "date" + str(timedate)
+  expensetoday= database.child("somiti").child("dailyoverview").child(timedate).get().val()
+  if expensetoday== None:
+    database.child("somiti").child("dailyoverview").child(timedate).update(
+      {"expensetoday": house_rent})
+  else:
+    savingtoday = float(expensetoday['expensetoday']) + float(house_rent)
+    database.child("somiti").child("dailyoverview").child(timedate).update(
+      {"expensetoday": savingtoday})
   return redirect('expensedetails')
 
 def expensedetails(request):
@@ -392,10 +413,88 @@ def addDepositorpost(request):
 
 
 def dashboard(request):
-  capital = database.child("somiti").get().val()
+  import time
+  import datetime
+  named_tuple = time.localtime()
+  timedate = time.strftime("%m%d%Y", named_tuple)
+  timedate = "date" + str(timedate)
+  expensetoday = database.child("somiti").child("dailyoverview").child(timedate).get().val()
+  if expensetoday == None:
+    database.child("somiti").child("dailyoverview").child(timedate).update(
+      {"expensetoday":0,"collection":0,"savings":0})
 
-  print(capital)
-  return render(request,"dashboard.html",capital)
+  datepicker=request.POST.get('datepicker')
+  datepicker1 = request.POST.get('datepicker1')
+  print(datepicker1)
+  if datepicker==None:
+     # get struct_time
+    time_string = time.strftime("%m%d%Y", named_tuple)
+    time_string="date"+str(time_string)
+    instalmentdate = database.child("somiti").child("installmentData").child(time_string).child(
+      "allloansaving").get().val()
+
+  else:
+    d = datetime.datetime.strptime(datepicker, '%Y-%m-%d')
+    time_string = "date" + str(d.strftime('%m%d%Y'))
+    print("datepick",time_string)
+    instalmentdate = database.child("somiti").child("installmentData").child(time_string).child(
+      "allloansaving").get().val()
+
+  if datepicker1 == None:
+    # get struct_time
+    time_string = time.strftime("%m%d%Y", named_tuple)
+    time_string = "date" + str(time_string)
+    dailyoverview = database.child("somiti").child("dailyoverview").child(time_string).get().val()
+
+  else:
+    d = datetime.datetime.strptime(datepicker1, '%Y-%m-%d')
+    time_string = "date" + str(d.strftime('%m%d%Y'))
+    print("datepick", time_string)
+    dailyoverview = database.child("somiti").child("dailyoverview").child(time_string).get().val()
+
+  overview= database.child("somiti").child("dashboarddata").get().val()
+  data={
+    "capital":overview['capital'],
+    "deposit":overview['deposit'],
+    "totalcollection":overview['totalcollection'],
+    "totalloan":overview['totalloan'],
+    "totalsavings":overview['totalsavings'],
+    "installmentdate1":instalmentdate,
+    "collection":dailyoverview['collection'],
+    "expensetoday":dailyoverview['expensetoday'],
+    "savings":dailyoverview['savings']
+  }
+
+  print(data)
+  return render(request,"dashboard.html",data)
 
 def adminprofile(request):
   return render(request,"profile.html")
+
+def deleteemployee(request, docid2):
+    print(docid2)
+
+    test = database.child("somiti").child("employee").get().val()
+    for key, value in test.items():
+      if value['employee_name'] == docid2:
+        database.child("somiti").child("employee").child(key).remove()
+    return redirect('employee')
+
+
+def deleteexpense(request, docid3):
+  print(docid3)
+
+  test = database.child("somiti").child("expense").get().val()
+  for key, value in test.items():
+    if value['father_name'] == docid3:
+      database.child("somiti").child("expense").child(key).remove()
+  return redirect('expensedetails')
+
+def deletedepositor(request, docid4):
+  print(docid4)
+
+  test = database.child("somiti").child("depostior").get().val()
+  for key, value in test.items():
+    if value['depositor_name'] == docid4:
+      database.child("somiti").child("depostior").child(key).remove()
+  return redirect('depositor')

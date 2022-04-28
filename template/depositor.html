@@ -326,7 +326,9 @@
               <td>{{value.deposit_date}}</td>
               <td>{{value.deposit_amount}}</td>
               <td>{{value.status}}</td>
-              <td style="text-align:center"><i style="color:#E73774;" class="fa-solid fa-trash"></i></td>
+              <td style="text-align:center;">
+                        <a href="{% url 'deletedepositor' value.depositor_name %}" style="color:#E73774;" class="fa-solid fa-trash"></a>
+                      </td>
             </tr>
            {% endfor %}
           </tbody>
